@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Private dinners — drop-in snippet</title>
+<style>
+  body{margin:0;background:#f5f1e8;color:#1f2822;
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:900px;margin:0 auto;padding:52px 26px 80px}
+  h1{font-family:"Iowan Old Style",Baskerville,Georgia,serif;font-weight:400;font-size:34px;margin:0 0 10px}
+  .lede{color:#5b6255;max-width:66ch;margin:0 0 28px}
+  h2{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#b6965d;margin:34px 0 10px}
+  pre{background:#fffefa;border:1px solid #ded8cb;padding:18px 20px;overflow:auto;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;line-height:1.65;margin:0}
+  .note{font-size:13px;color:#5b6255;margin:10px 0 0}
+  code{background:#eae3d4;padding:1.5px 5px;border-radius:2px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>“Private dinners” — drop-in snippet</h1>
+  <p class="lede">Two pieces: a link in the header, and a band in the page body. Everything is namespaced
+  under <code>.blg-events</code> / <code>.blg-navlink</code>, so it cannot collide with the existing
+  stylesheet. It reads the tokens already defined in <code>styles.css</code>.</p>
+
+  <h2>1 — Markup</h2>
+  <pre>&lt;!-- 1. Header: add beside the existing "Explore wines" text button --&gt;
+&lt;a class="blg-navlink" href="/events"&gt;Private dinners&lt;/a&gt;
+
+
+&lt;!-- 2. Page body: place directly after the "From the current selection" grid --&gt;
+&lt;section class="blg-events" aria-labelledby="blg-events-title"&gt;
+  &lt;div class="blg-events__inner"&gt;
+
+    &lt;div class="blg-events__photo"&gt;
+      &lt;img src="/events/assets/dome.jpg"
+           alt="The glass dome of Robuchon au Dôme, 43rd floor of Grand Lisboa, Macau"
+           width="1263" height="1175" loading="lazy" decoding="async"&gt;
+    &lt;/div&gt;
+
+    &lt;div class="blg-events__copy"&gt;
+      &lt;div class="blg-events__eyebrow"&gt;This season · Macau&lt;/div&gt;
+
+      &lt;h2 class="blg-events__title" id="blg-events-title"&gt;
+        Two evenings&lt;br&gt;beneath &lt;em&gt;the dome&lt;/em&gt;
+      &lt;/h2&gt;
+
+      &lt;ul class="blg-events__list"&gt;
+        &lt;li&gt;
+          &lt;time datetime="2026-11-21"&gt;21 Nov 2026&lt;/time&gt;
+          &lt;span&gt;
+            &lt;span class="blg-events__name"&gt;Château Palmer&lt;/span&gt;
+            &lt;span class="blg-events__vintage"&gt;The mythical 1961 vintage&lt;/span&gt;
+          &lt;/span&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;time datetime="2026-12-12"&gt;12 Dec 2026&lt;/time&gt;
+          &lt;span&gt;
+            &lt;span class="blg-events__name"&gt;Château Cheval Blanc&lt;/span&gt;
+            &lt;span class="blg-events__vintage"&gt;The legend of 1947&lt;/span&gt;
+          &lt;/span&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+
+      &lt;a class="blg-events__cta" href="/events"&gt;
+        View the calendar &lt;span aria-hidden="true"&gt;↗&lt;/span&gt;
+      &lt;/a&gt;
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+&lt;/section&gt;
+
+
+&lt;!-- 3. Optional: a suggested prompt in Sophie's chat --&gt;
+&lt;button type="button" class="prompt-chip" data-prompt="What is on this season?"&gt;
+  What’s on this season?
+&lt;/button&gt;
+</pre>
+
+  <h2>2 — CSS</h2>
+  <p class="note">Append to <code>styles.css</code>, or paste into a <code>&lt;style&gt;</code> block.</p>
+  <pre>/* ---- Private dinners — event calendar entry point --------------------
+   Scope: .blg-events. Uses the tokens already defined in styles.css:
+   --paper --paper-deep --cream --ink --muted --green --wine --gold
+   --line --white --serif --sans
+   ------------------------------------------------------------------ */
+.blg-events {
+  --blg-muted: #5f6659;        /* AA (4.65:1) on --paper-deep; --muted is only 3.46:1 */
+  --blg-hair:  #d8d1c2;
+  border-top: 1px solid var(--line);
+  background: var(--paper-deep);
+}
+.blg-events__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  align-items: stretch;
+}
+.blg-events__photo { position: relative; min-height: 340px; overflow: hidden; }
+.blg-events__photo img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 64%;
+  box-shadow: inset 0 0 0 1px rgba(29, 61, 48, .10);
+}
+.blg-events__copy { padding: 54px 48px 56px; }
+
+.blg-events__eyebrow {
+  display: flex; align-items: center; gap: 11px;
+  font-family: var(--sans);
+  font-size: 10px; letter-spacing: .26em; text-transform: uppercase;
+  color: var(--wine);
+}
+.blg-events__eyebrow::before {
+  content: ""; width: 24px; height: 1px; background: var(--gold); flex: none;
+}
+.blg-events__title {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(28px, 3.2vw, 38px); line-height: 1.1;
+  letter-spacing: -.012em;
+  margin: 17px 0 26px;
+  color: var(--ink);
+}
+.blg-events__title em { font-style: italic; color: var(--wine); }
+
+.blg-events__list { margin: 0 0 24px; padding: 0; list-style: none; }
+.blg-events__list li {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  padding: 14px 0;
+  border-top: 1px solid var(--blg-hair);
+}
+.blg-events__list li:last-child { border-bottom: 1px solid var(--blg-hair); }
+.blg-events__list time {
+  flex: none; min-width: 108px; padding-top: 4px;
+  font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--blg-muted);
+}
+.blg-events__name {
+  display: block;
+  font-family: var(--serif); font-weight: 400; font-size: 18px;
+  color: var(--ink); line-height: 1.25; letter-spacing: -.002em;
+}
+.blg-events__vintage {
+  display: block; margin-top: 3px;
+  font-size: 13px; color: var(--blg-muted);
+}
+
+/* the button: Sophie's .button geometry, in wine rather than green */
+.blg-events__cta {
+  min-height: 48px; padding: 0 22px;
+  display: inline-flex; align-items: center; gap: 18px;
+  border: 1px solid var(--wine); border-radius: 2px;
+  background: var(--wine); color: var(--white);
+  font-family: var(--sans); font-size: 11px; font-weight: 650;
+  letter-spacing: .04em; text-decoration: none;
+  box-shadow: 0 7px 18px rgba(125, 52, 64, .15);
+  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.blg-events__cta:hover { background: var(--wine-deep); border-color: var(--wine-deep); }
+.blg-events__cta:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+.blg-events__cta span[aria-hidden] { font-size: 15px; font-weight: 400; transition: transform .25s ease; }
+.blg-events__cta:hover span[aria-hidden] { transform: translate(2px, -2px); }
+.blg-events__cta:active { transform: translateY(1px); }
+
+/* header entry point */
+.blg-navlink {
+  font-family: var(--sans); font-size: 12px; font-weight: 650;
+  color: var(--wine); background: none; border: 0; padding: 0;
+  text-decoration: none; cursor: pointer;
+  transition: color .2s ease;
+}
+.blg-navlink:hover { color: var(--wine-deep); }
+.blg-navlink:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+
+@media (max-width: 860px) {
+  .blg-events__inner { grid-template-columns: 1fr; }
+  .blg-events__photo { min-height: 240px; }
+  .blg-events__copy { padding: 34px 22px 38px; }
+  .blg-events__list time { min-width: 88px; }
+  .blg-events__cta { width: 100%; justify-content: space-between; }
+  .blg-navlink { display: none; }   /* collapses into the mobile menu */
+}
+@media (prefers-reduced-motion: reduce) {
+  .blg-events__cta { transition: none; }
+}
+</pre>
+
+  <h2>3 — One asset</h2>
+  <p class="note">Save the venue photograph as <code>/events/assets/dome.jpg</code> (1263 × 1175). The demo
+  embeds it inline; on the live site reference it by path so the browser can cache it.</p>
+
+  <h2>Notes</h2>
+  <p class="note">· The header link hides below 860 px and belongs in the existing mobile menu.<br>
+  · The button is <code>--wine</code>, not <code>--green</code>: it separates “book a dinner” from “buy wine”.<br>
+  · Focus states are explicit, tap target is 46 px, and the band respects <code>prefers-reduced-motion</code>.<br>
+  · Dates are real <code>&lt;time datetime&gt;</code> values, so search engines can read them.</p>
+</div>
+</body>
+</html>
