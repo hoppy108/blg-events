@@ -882,6 +882,97 @@ button { cursor: pointer; }
   font-family: var(--sans); font-size: 10.5px; line-height: 1.8; color: var(--dim-2);
 }
 .aside-note em { font-style: normal; color: var(--gold-dim); letter-spacing: .08em; }
+
+/* ---------- client access gate ---------- */
+.gate {
+  position: fixed; inset: 0; z-index: 300;
+  display: grid; place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(120% 90% at 50% 0%, #2a1116 0%, #140a0c 55%, #0d0708 100%);
+  color: var(--cream);
+  font-family: var(--sans);
+}
+.gate[hidden] { display: none; }
+body.gated { overflow: hidden; }
+
+.gate-card {
+  width: min(430px, 100%);
+  text-align: center;
+  border: 1px solid rgba(179, 149, 79, .22);
+  background: rgba(20, 12, 14, .55);
+  padding: 46px 34px 38px;
+  box-shadow: 0 40px 90px rgba(0, 0, 0, .5);
+}
+.gate-mark {
+  font-size: 9.5px; letter-spacing: .34em; text-transform: uppercase;
+  color: var(--gold); margin: 0 0 18px;
+}
+.gate-title {
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(27px, 5vw, 34px); line-height: 1.14;
+  margin: 0 0 12px; color: var(--cream);
+}
+.gate-title em { font-style: italic; color: var(--gold-bright); }
+.gate-copy {
+  font-size: 12.5px; line-height: 1.7; color: var(--dim);
+  margin: 0 auto 26px; max-width: 30ch;
+}
+.gate-rule {
+  width: 34px; height: 1px; background: var(--gold-dim);
+  margin: 0 auto 26px;
+}
+.gate-form { display: flex; flex-direction: column; gap: 10px; }
+.gate-label {
+  font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--dim-2); text-align: left;
+}
+.gate-input {
+  width: 100%;
+  padding: 14px 15px;
+  background: rgba(0, 0, 0, .28);
+  border: 1px solid rgba(179, 149, 79, .3);
+  color: var(--cream);
+  font-family: var(--sans); font-size: 14px; letter-spacing: .06em;
+}
+.gate-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px rgba(179, 149, 79, .4);
+}
+.gate-submit {
+  margin-top: 4px;
+  padding: 15px 20px;
+  background: var(--gold); color: #1a1113;
+  border: 1px solid var(--gold);
+  font-family: var(--sans); font-size: 10.5px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+.gate-submit:hover { background: var(--gold-bright); border-color: var(--gold-bright); }
+.gate-error {
+  min-height: 16px; margin: 12px 0 0;
+  font-size: 11px; line-height: 1.5; color: #e2a09a;
+}
+.gate-foot {
+  margin: 26px 0 0; padding-top: 18px;
+  border-top: 1px solid rgba(179, 149, 79, .14);
+  font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--dim-2);
+}
+.gate-noscript {
+  margin-top: 16px; font-size: 11px; color: var(--dim);
+}
+.gate-shake { animation: gate-shake .34s ease; }
+@keyframes gate-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gate-shake { animation: none; }
+}
 </style>
 
 <!-- Share card: what appears when the link is pasted into WhatsApp, WeChat,
@@ -891,20 +982,104 @@ button { cursor: pointer; }
 <meta property="og:title" content="The Legend of Château Palmer · 21 November 2026, Robuchon au Dôme">
 <meta property="og:description" content="Six courses and six pairings with Château Palmer from 2023 back to the legendary 1961 — re-corked in Macau in 2005 and opened after twenty-one years. Robuchon au Dôme, Grand Lisboa.">
 <meta property="og:url" content="https://events.bordeauxliquidgold.com/chateau-palmer-2026">
-<meta property="og:image" content="https://events.bordeauxliquidgold.com/og-palmer.png">
+<meta property="og:image" content="https://events.bordeauxliquidgold.com/og-palmer.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:type" content="image/png">
+<meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:alt" content="The Legend of Château Palmer — 21 November 2026, Robuchon au Dôme, Grand Lisboa, Macau">
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="The Legend of Château Palmer · 21 November 2026, Robuchon au Dôme">
 <meta name="twitter:description" content="Six courses and six pairings with Château Palmer from 2023 back to the legendary 1961 — re-corked in Macau in 2005 and opened after twenty-one years. Robuchon au Dôme, Grand Lisboa.">
-<meta name="twitter:image" content="https://events.bordeauxliquidgold.com/og-palmer.png">
+<meta name="twitter:image" content="https://events.bordeauxliquidgold.com/og-palmer.jpg">
 </head>
 <body>
 
 <a class="skip" href="#reserve">Skip to reservations</a>
+
+<!-- Client access gate. The passphrase is never stored in this file: only a
+     SHA-256 digest is compared, so the code cannot be read out of the source.
+     This deters casual visitors; it is not server-side security. -->
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+  <div class="gate-card">
+    <p class="gate-mark">Bordeaux Liquid Gold</p>
+    <h2 class="gate-title" id="gateTitle">A private<br><em>invitation</em></h2>
+    <p class="gate-copy">These evenings are shown to clients of Bordeaux Liquid Gold. Please enter the access code from your invitation.</p>
+    <div class="gate-rule" aria-hidden="true"></div>
+    <form class="gate-form" id="gateForm" novalidate>
+      <label class="gate-label" for="gateCode">Access code</label>
+      <input class="gate-input" id="gateCode" name="code" type="password"
+             autocomplete="off" spellcheck="false" autocapitalize="off" required>
+      <button class="gate-submit" type="submit">Enter</button>
+      <p class="gate-error" id="gateError" role="alert" aria-live="polite"></p>
+    </form>
+    <p class="gate-foot">Robuchon au Dôme · Grand Lisboa, Macau</p>
+    <noscript><p class="gate-noscript">This page needs JavaScript enabled to unlock.</p></noscript>
+  </div>
+</div>
+<script>
+(function () {
+  var DIGEST = "a279ba16ba9b853cba0281a8b5e62b0f547e7037f5008780ef6bd7f9827fa2ed";
+  var KEY = "blg-events-access";
+  var gate = document.getElementById("gate");
+  var form = document.getElementById("gateForm");
+  var input = document.getElementById("gateCode");
+  var error = document.getElementById("gateError");
+
+  function unlock() {
+    gate.hidden = true;
+    document.body.classList.remove("gated");
+    document.documentElement.classList.add("unlocked");
+    var first = document.querySelector("main, section, #top");
+    if (first) {
+      first.setAttribute("tabindex", "-1");
+      first.focus({ preventScroll: true });
+    }
+  }
+
+  function deny() {
+    error.textContent = "That code is not recognised. Please check your invitation.";
+    gate.querySelector(".gate-card").classList.remove("gate-shake");
+    void gate.querySelector(".gate-card").offsetWidth;
+    gate.querySelector(".gate-card").classList.add("gate-shake");
+    input.select();
+  }
+
+  async function digestOf(text) {
+    var bytes = new TextEncoder().encode(text);
+    var hash = await crypto.subtle.digest("SHA-256", bytes);
+    return Array.from(new Uint8Array(hash))
+      .map(function (b) { return b.toString(16).padStart(2, "0"); })
+      .join("");
+  }
+
+  try {
+    if (localStorage.getItem(KEY) === DIGEST) { unlock(); return; }
+  } catch (e) { /* private mode: fall through to the prompt */ }
+
+  document.body.classList.add("gated");
+  setTimeout(function () { input.focus(); }, 60);
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    var value = input.value.trim();
+    if (!value) { error.textContent = "Please enter the code."; return; }
+    error.textContent = "";
+    try {
+      if (await digestOf(value) === DIGEST) {
+        try { localStorage.setItem(KEY, DIGEST); } catch (e) {}
+        unlock();
+      } else {
+        deny();
+      }
+    } catch (e) {
+      error.textContent = "Could not check the code in this browser. Please try another browser.";
+    }
+  });
+
+  input.addEventListener("input", function () { error.textContent = ""; });
+})();
+</script>
 
 <!-- ============================== MASTHEAD ============================== -->
 <header class="masthead" id="masthead">
